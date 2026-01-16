@@ -1,0 +1,8 @@
+{
+    "KPlugin": {
+        "Description": "This plugin adds a pane with snapshot information to Dolphin's properties dialog.",
+        "Icon": "document-open",
+        "Name": "KDE Dolphin Snapshots Pane",
+        "EnabledByDefault": true
+    }
+}

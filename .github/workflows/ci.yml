@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: fedora:latest
+
+    steps:
+      - name: Install dependencies
+        run: |
+          dnf install -y \
+            cmake \
+            gcc-c++ \
+            extra-cmake-modules \
+            qt6-qtbase-devel \
+            qt6-qt5compat-devel \
+            kf6-kxmlgui-devel \
+            kf6-ki18n-devel \
+            kf6-kio-devel \
+            kf6-ktextwidgets-devel \
+            kf6-kconfig-devel \
+            kf6-kcoreaddons-devel \
+            kf6-kwidgetsaddons-devel \
+            kf6-solid-devel
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: cmake --build build
