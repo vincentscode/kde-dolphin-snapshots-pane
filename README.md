@@ -1,0 +1,1 @@
+# KDE Dolphin Snapshots Pane
