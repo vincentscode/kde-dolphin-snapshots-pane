@@ -4,13 +4,13 @@ msgstr ""
 
 #: src/SnapshotsPane.cpp:76
 msgid "Snapshots are not supported at this location."
-msgstr "Snapshots are not supported at this location."
+msgstr "Snapshots werden an diesem Ort nicht unterstützt."
 
 #: src/SnapshotsPane.cpp:83
 msgid "1 snapshot found:"
 msgid_plural "%1 snapshots found:"
-msgstr[0] "1 snapshot found:"
-msgstr[1] "%1 snapshots found:"
+msgstr[0] "1 snapshot gefunden:"
+msgstr[1] "%1 snapshots gefunden:"
 
 #: src/SnapshotsPane.cpp:87
 msgctxt "@title:column"
