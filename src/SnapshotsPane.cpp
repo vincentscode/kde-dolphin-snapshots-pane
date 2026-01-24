@@ -35,10 +35,19 @@ QList<SnapshotInfo> SnapshotsPane::findSnapshots(const QString &filePath)
     QList<SnapshotInfo> snapshots;
     QFileInfo fileInfo(filePath);
 
-    QString parentDirectoryPath = fileInfo.absolutePath();
-    QString fileName = fileInfo.fileName();
+    // For directories, snapshots are in directory/.snap/*
+    // For files, snapshots are in parent/.snap/*/filename
+    QString searchPath;
+    QString fileName;
+    if (fileInfo.isDir()) {
+        searchPath = fileInfo.absoluteFilePath();
+        fileName = QStringLiteral("");  // For directories, we don't need to append a filename
+    } else {
+        searchPath = fileInfo.absolutePath();
+        fileName = fileInfo.fileName();
+    }
 
-    QString snapDirectoryPath = findSnapshotDirectory(parentDirectoryPath);
+    QString snapDirectoryPath = findSnapshotDirectory(searchPath);
     if (snapDirectoryPath.isEmpty()) {
         return snapshots;
     }
@@ -47,7 +56,10 @@ QList<SnapshotInfo> SnapshotsPane::findSnapshots(const QString &filePath)
     QStringList snapshotEntries = snapDirectory.entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name);
 
     for (const QString &snapshotName : snapshotEntries) {
-        QString snapshotPath = snapDirectoryPath + QStringLiteral("/") + snapshotName + QStringLiteral("/") + fileName;
+        QString snapshotPath = snapDirectoryPath + QStringLiteral("/") + snapshotName;
+        if (!fileName.isEmpty()) {
+            snapshotPath += QStringLiteral("/") + fileName;
+        }
         QFileInfo snapshotFileInfo(snapshotPath);
 
         if (snapshotFileInfo.exists()) {
@@ -69,9 +81,12 @@ SnapshotsPane::SnapshotsPane(const QString &filePath, KPropertiesDialog *props)
     QVBoxLayout *layout = new QVBoxLayout(this);
 
     QFileInfo fileInfo(filePath);
-    QString parentDirectoryPath = fileInfo.absolutePath();
+    
+    // For directories, check inside the directory itself
+    // For files, check in the parent directory
+    QString searchPath = fileInfo.isDir() ? fileInfo.absoluteFilePath() : fileInfo.absolutePath();
 
-    if (findSnapshotDirectory(parentDirectoryPath).isEmpty()) {
+    if (findSnapshotDirectory(searchPath).isEmpty()) {
         QLabel *messageLabel = new QLabel(QStringLiteral("Snapshots are not supported at this location."), this);
         layout->addWidget(messageLabel);
         return;
