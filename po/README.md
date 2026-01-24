@@ -4,7 +4,7 @@ This plugin now supports localization through KDE's i18n framework.
 
 ## Supported Languages
 
-- German (de)
+- German (de) - Only "Date" is translated to "Datum"; "snapshot/snapshots" terms remain in English
 - US English (en_US)
 
 ## Translation Files
@@ -25,17 +25,7 @@ Translation files are located in the `po/` directory:
 
 2. Edit the new `.po` file and translate the strings in the `msgstr` fields
 
-3. Update the `Language` and `Plural-Forms` headers according to your language
-
-## Updating Translation Template
-
-After modifying source code strings, regenerate the template:
-
-```bash
-./Messages.sh
-```
-
-This requires the KDE gettext tools to be installed.
+3. **Important**: Do NOT translate the words "snapshot" or "snapshots" - keep them in English
 
 ## Building with Translations
 
