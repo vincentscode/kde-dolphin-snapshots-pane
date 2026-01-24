@@ -30,22 +30,21 @@ QString SnapshotsPane::findSnapshotDirectory(const QString &parentPath)
     return QString();
 }
 
+QString SnapshotsPane::getSearchPathForSnapshots(const QString &filePath)
+{
+    QFileInfo fileInfo(filePath);
+    // For directories, snapshots are in directory/.snap/*
+    // For files, snapshots are in parent/.snap/*/filename
+    return fileInfo.isDir() ? fileInfo.absoluteFilePath() : fileInfo.absolutePath();
+}
+
 QList<SnapshotInfo> SnapshotsPane::findSnapshots(const QString &filePath)
 {
     QList<SnapshotInfo> snapshots;
     QFileInfo fileInfo(filePath);
 
-    // For directories, snapshots are in directory/.snap/*
-    // For files, snapshots are in parent/.snap/*/filename
-    QString searchPath;
-    QString fileName;
-    if (fileInfo.isDir()) {
-        searchPath = fileInfo.absoluteFilePath();
-        fileName = QStringLiteral("");  // For directories, we don't need to append a filename
-    } else {
-        searchPath = fileInfo.absolutePath();
-        fileName = fileInfo.fileName();
-    }
+    QString searchPath = getSearchPathForSnapshots(filePath);
+    QString fileName = fileInfo.isDir() ? QString() : fileInfo.fileName();
 
     QString snapDirectoryPath = findSnapshotDirectory(searchPath);
     if (snapDirectoryPath.isEmpty()) {
@@ -80,11 +79,7 @@ SnapshotsPane::SnapshotsPane(const QString &filePath, KPropertiesDialog *props)
     setMinimumWidth(500);
     QVBoxLayout *layout = new QVBoxLayout(this);
 
-    QFileInfo fileInfo(filePath);
-    
-    // For directories, check inside the directory itself
-    // For files, check in the parent directory
-    QString searchPath = fileInfo.isDir() ? fileInfo.absoluteFilePath() : fileInfo.absolutePath();
+    QString searchPath = getSearchPathForSnapshots(filePath);
 
     if (findSnapshotDirectory(searchPath).isEmpty()) {
         QLabel *messageLabel = new QLabel(QStringLiteral("Snapshots are not supported at this location."), this);
