@@ -51,10 +51,14 @@ QList<SnapshotInfo> SnapshotsPane::findSnapshots(const QString &filePath)
         QFileInfo snapshotFileInfo(snapshotPath);
 
         if (snapshotFileInfo.exists()) {
+            // Get the snapshot directory's modification time, which represents when the snapshot was created
+            QString snapshotDirPath = snapDirectoryPath + QStringLiteral("/") + snapshotName;
+            QFileInfo snapshotDirInfo(snapshotDirPath);
+            
             SnapshotInfo info;
             info.name = snapshotName;
             info.path = snapshotPath;
-            info.timestamp = snapshotFileInfo.lastModified();
+            info.timestamp = snapshotDirInfo.lastModified();
             snapshots.append(info);
         }
     }
@@ -83,7 +87,7 @@ SnapshotsPane::SnapshotsPane(const QString &filePath, KPropertiesDialog *props)
     layout->addWidget(headerLabel);
 
     QTreeWidget *treeWidget = new QTreeWidget(this);
-    treeWidget->setHeaderLabels({QStringLiteral("Name"), QStringLiteral("Date")});
+    treeWidget->setHeaderLabels({QStringLiteral("Name"), QStringLiteral("Snapshot Date")});
     treeWidget->setRootIsDecorated(false);
     treeWidget->header()->setStretchLastSection(true);
 
