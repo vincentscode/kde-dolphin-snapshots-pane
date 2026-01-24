@@ -47,12 +47,12 @@ QList<SnapshotInfo> SnapshotsPane::findSnapshots(const QString &filePath)
     QStringList snapshotEntries = snapDirectory.entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name);
 
     for (const QString &snapshotName : snapshotEntries) {
-        QString snapshotPath = snapDirectoryPath + QStringLiteral("/") + snapshotName + QStringLiteral("/") + fileName;
+        QString snapshotDirPath = snapDirectoryPath + QStringLiteral("/") + snapshotName;
+        QString snapshotPath = snapshotDirPath + QStringLiteral("/") + fileName;
         QFileInfo snapshotFileInfo(snapshotPath);
 
         if (snapshotFileInfo.exists()) {
             // Get the snapshot directory's modification time, which represents when the snapshot was created
-            QString snapshotDirPath = snapDirectoryPath + QStringLiteral("/") + snapshotName;
             QFileInfo snapshotDirInfo(snapshotDirPath);
             
             SnapshotInfo info;
