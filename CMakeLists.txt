@@ -16,6 +16,7 @@ include(KDECMakeSettings)
 include(KDECompilerSettings NO_POLICY_SCOPE)
 include(ECMDeprecationSettings)
 include(ECMOptionalAddSubdirectory)
+include(KDEGitCommitHooks)
 
 find_package(Qt6 ${QT_MIN_VERSION} REQUIRED COMPONENTS
     Core
@@ -64,3 +65,6 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 install(TARGETS kde-dolphin-snapshots-pane DESTINATION ${KDE_INSTALL_PLUGINDIR}/kf6/propertiesdialog/)
 install(FILES kde-dolphin-snapshots-pane.json DESTINATION  ${KDE_INSTALL_PLUGINDIR}/kf6/propertiesdialog/)
+
+# Install translation files
+ki18n_install(po)
