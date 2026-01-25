@@ -7,6 +7,7 @@
 #include <QHeaderView>
 #include <QDesktopServices>
 #include <QLocale>
+#include <QColor>
 
 #include <KPropertiesDialog>
 
@@ -55,6 +56,7 @@ QList<SnapshotInfo> SnapshotsPane::findSnapshots(const QString &filePath)
             info.name = snapshotName;
             info.path = snapshotPath;
             info.timestamp = snapshotFileInfo.lastModified();
+            info.fileSize = snapshotFileInfo.size();
             snapshots.append(info);
         }
     }
@@ -84,15 +86,54 @@ SnapshotsPane::SnapshotsPane(const QString &filePath, KPropertiesDialog *props)
 
     QTreeWidget *treeWidget = new QTreeWidget(this);
     treeWidget->setHeaderLabels({QStringLiteral("Name"), QStringLiteral("Date modified")});
-    treeWidget->setRootIsDecorated(false);
+    treeWidget->setRootIsDecorated(true);
     treeWidget->header()->setStretchLastSection(true);
 
-    for (const SnapshotInfo &snapshot : snapshots) {
-        QTreeWidgetItem *item = new QTreeWidgetItem();
-        item->setText(0, snapshot.name);
-        item->setText(1, QLocale::system().toString(snapshot.timestamp, QLocale::ShortFormat));
-        item->setData(0, Qt::UserRole, snapshot.path);
-        treeWidget->addTopLevelItem(item);
+    // Group consecutive snapshots with no changes
+    int i = 0;
+    while (i < snapshots.size()) {
+        const SnapshotInfo &currentSnapshot = snapshots[i];
+        
+        // Find consecutive snapshots with same size and timestamp (unchanged)
+        int groupEnd = i;
+        while (groupEnd + 1 < snapshots.size() &&
+               snapshots[groupEnd + 1].fileSize == currentSnapshot.fileSize &&
+               snapshots[groupEnd + 1].timestamp == currentSnapshot.timestamp) {
+            groupEnd++;
+        }
+        
+        int groupSize = groupEnd - i + 1;
+        
+        if (groupSize > 1) {
+            // Create a parent item for the group
+            QTreeWidgetItem *groupItem = new QTreeWidgetItem();
+            QString groupLabel = QString::number(groupSize) + QStringLiteral(" snapshots (no changes)");
+            groupItem->setText(0, groupLabel);
+            groupItem->setText(1, QLocale::system().toString(currentSnapshot.timestamp, QLocale::ShortFormat));
+            groupItem->setForeground(0, QColor(128, 128, 128));
+            groupItem->setForeground(1, QColor(128, 128, 128));
+            treeWidget->addTopLevelItem(groupItem);
+            
+            // Add individual snapshots as children
+            for (int j = i; j <= groupEnd; j++) {
+                QTreeWidgetItem *childItem = new QTreeWidgetItem(groupItem);
+                childItem->setText(0, snapshots[j].name);
+                childItem->setText(1, QLocale::system().toString(snapshots[j].timestamp, QLocale::ShortFormat));
+                childItem->setData(0, Qt::UserRole, snapshots[j].path);
+            }
+            
+            // Start collapsed
+            groupItem->setExpanded(false);
+        } else {
+            // Single snapshot or changed snapshot - add normally
+            QTreeWidgetItem *item = new QTreeWidgetItem();
+            item->setText(0, currentSnapshot.name);
+            item->setText(1, QLocale::system().toString(currentSnapshot.timestamp, QLocale::ShortFormat));
+            item->setData(0, Qt::UserRole, currentSnapshot.path);
+            treeWidget->addTopLevelItem(item);
+        }
+        
+        i = groupEnd + 1;
     }
 
     treeWidget->resizeColumnToContents(0);
@@ -100,6 +141,8 @@ SnapshotsPane::SnapshotsPane(const QString &filePath, KPropertiesDialog *props)
 
     connect(treeWidget, &QTreeWidget::itemDoubleClicked, this, [](QTreeWidgetItem *item) {
         QString path = item->data(0, Qt::UserRole).toString();
-        QDesktopServices::openUrl(QUrl::fromLocalFile(path));
+        if (!path.isEmpty()) {
+            QDesktopServices::openUrl(QUrl::fromLocalFile(path));
+        }
     });
 }

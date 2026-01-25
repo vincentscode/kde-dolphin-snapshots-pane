@@ -10,6 +10,7 @@ struct SnapshotInfo {
     QString name;
     QString path;
     QDateTime timestamp;
+    qint64 fileSize;
 };
 
 class SnapshotsPane : public QWidget
