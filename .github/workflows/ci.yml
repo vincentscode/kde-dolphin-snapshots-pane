@@ -28,7 +28,9 @@ jobs:
             kf6-kconfig-devel \
             kf6-kcoreaddons-devel \
             kf6-kwidgetsaddons-devel \
-            kf6-solid-devel
+            kf6-solid-devel \
+            dbus-x11 \
+            xorg-x11-server-Xvfb
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -38,3 +40,8 @@ jobs:
 
       - name: Build
         run: cmake --build build
+
+      - name: Run tests
+        run: |
+          cd build
+          xvfb-run ctest --output-on-failure --verbose
