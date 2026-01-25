@@ -2,6 +2,7 @@
 #include <KFileItem>
 #include <KPropertiesDialog>
 #include <KLocalizedString>
+#include <QFileInfo>
 
 #include "SnapshotsPanePlugin.h"
 #include "SnapshotsPane.h"
@@ -24,7 +25,16 @@ SnapshotsPanePlugin::SnapshotsPanePlugin(QObject *parent) : KPropertiesDialogPlu
 		return;
 	}
 
-	SnapshotsPane *snapshotsPane = new SnapshotsPane(item.localPath(), propertiesDialog);
+	QString filePath = item.localPath();
+	QFileInfo fileInfo(filePath);
+	QString parentDirectoryPath = fileInfo.absolutePath();
+
+	// Only add the pane if snapshots are available at this location
+	if (SnapshotsPane::findSnapshotDirectory(parentDirectoryPath).isEmpty()) {
+		return;
+	}
+
+	SnapshotsPane *snapshotsPane = new SnapshotsPane(filePath, propertiesDialog);
 	snapshotsPane->setObjectName(QStringLiteral("SnapshotsPane"));
 	
 	propertiesDialog->addPage(snapshotsPane, i18nc("SnapshotsPane", "Snapshots"));

@@ -1,0 +1,20 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "1 snapshot found:"
+msgid_plural "%1 snapshots found:"
+msgstr[0] ""
+msgstr[1] ""
+
+msgctxt "@title:column"
+msgid "Name"
+msgstr ""
+
+msgctxt "@title:column"
+msgid "Date"
+msgstr ""
+
+msgctxt "SnapshotsPane"
+msgid "Snapshots"
+msgstr ""

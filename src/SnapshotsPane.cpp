@@ -9,6 +9,7 @@
 #include <QLocale>
 
 #include <KPropertiesDialog>
+#include <KLocalizedString>
 
 #include "SnapshotsPane.h"
 
@@ -79,21 +80,13 @@ SnapshotsPane::SnapshotsPane(const QString &filePath, KPropertiesDialog *props)
     setMinimumWidth(500);
     QVBoxLayout *layout = new QVBoxLayout(this);
 
-    QString searchPath = getSearchPathForSnapshots(filePath);
-
-    if (findSnapshotDirectory(searchPath).isEmpty()) {
-        QLabel *messageLabel = new QLabel(QStringLiteral("Snapshots are not supported at this location."), this);
-        layout->addWidget(messageLabel);
-        return;
-    }
-
     QList<SnapshotInfo> snapshots = findSnapshots(filePath);
 
-    QLabel *headerLabel = new QLabel(QString::number(snapshots.size()) + QStringLiteral(" snapshot(s) found:"), this);
+    QLabel *headerLabel = new QLabel(i18np("1 snapshot found:", "%1 snapshots found:", snapshots.size()), this);
     layout->addWidget(headerLabel);
 
     QTreeWidget *treeWidget = new QTreeWidget(this);
-    treeWidget->setHeaderLabels({QStringLiteral("Name"), QStringLiteral("Date")});
+    treeWidget->setHeaderLabels({i18nc("@title:column", "Name"), i18nc("@title:column", "Date")});
     treeWidget->setRootIsDecorated(false);
     treeWidget->header()->setStretchLastSection(true);
 

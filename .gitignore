@@ -2,5 +2,9 @@
 
 build/
 
-# CodeQL temporary files
+# Compiled translation files
+*.mo
+*.gmo
+
+# CodeQL
 _codeql_detected_source_root
