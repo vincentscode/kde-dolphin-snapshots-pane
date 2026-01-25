@@ -2,6 +2,12 @@
 
 build/
 
+# Test artifacts
+tests/*.o
+tests/moc_*.cpp
+tests/*Test
+Testing/
+
 # Compiled translation files
 *.mo
 *.gmo

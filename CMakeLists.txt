@@ -67,3 +67,10 @@ install(FILES kde-dolphin-snapshots-pane.json DESTINATION  ${KDE_INSTALL_PLUGIND
 
 # Install translation files
 ki18n_install(po)
+
+# Enable testing
+include(CTest)
+enable_testing()
+
+# Add tests subdirectory
+add_subdirectory(tests)
