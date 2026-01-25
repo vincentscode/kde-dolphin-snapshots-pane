@@ -7,7 +7,6 @@
 #include <QHeaderView>
 #include <QDesktopServices>
 #include <QLocale>
-#include <QColor>
 
 #include <KPropertiesDialog>
 
@@ -110,8 +109,8 @@ SnapshotsPane::SnapshotsPane(const QString &filePath, KPropertiesDialog *props)
             QString groupLabel = QString::number(groupSize) + QStringLiteral(" snapshots (no changes)");
             groupItem->setText(0, groupLabel);
             groupItem->setText(1, QLocale::system().toString(currentSnapshot.timestamp, QLocale::ShortFormat));
-            groupItem->setForeground(0, QColor(128, 128, 128));
-            groupItem->setForeground(1, QColor(128, 128, 128));
+            groupItem->setForeground(0, treeWidget->palette().color(QPalette::Disabled, QPalette::Text));
+            groupItem->setForeground(1, treeWidget->palette().color(QPalette::Disabled, QPalette::Text));
             treeWidget->addTopLevelItem(groupItem);
             
             // Add individual snapshots as children
