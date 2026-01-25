@@ -4,8 +4,8 @@ msgstr ""
 
 msgid "1 snapshot found:"
 msgid_plural "%1 snapshots found:"
-msgstr[0] "1 snapshot gefunden:"
-msgstr[1] "%1 snapshots gefunden:"
+msgstr[0] "1 Snapshot gefunden:"
+msgstr[1] "%1 Snapshots gefunden:"
 
 msgctxt "@title:column"
 msgid "Name"
