@@ -84,7 +84,7 @@ jobs:
           path: build/
 
       - name: Make test executables executable
-        run: chmod -R +x build/tests/
+        run: find build/tests -type f -name '*Test' -exec chmod +x {} +
 
       - name: Run tests
         run: |
