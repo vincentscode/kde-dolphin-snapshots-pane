@@ -5,7 +5,7 @@
 #include <QFileInfo>
 #include <QDebug>
 
-#include "../src/SnapshotsPane.h"
+#include "SnapshotsPane.h"
 
 class SnapshotDiscoveryTest : public QObject
 {
