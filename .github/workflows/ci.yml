@@ -28,9 +28,7 @@ jobs:
             kf6-kconfig-devel \
             kf6-kcoreaddons-devel \
             kf6-kwidgetsaddons-devel \
-            kf6-solid-devel \
-            dbus-x11 \
-            xorg-x11-server-Xvfb
+            kf6-solid-devel
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -40,6 +38,45 @@ jobs:
 
       - name: Build
         run: cmake --build build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: build/
+
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+    container:
+      image: fedora:latest
+
+    steps:
+      - name: Install dependencies
+        run: |
+          dnf install -y \
+            cmake \
+            qt6-qtbase-devel \
+            qt6-qt5compat-devel \
+            kf6-kxmlgui-devel \
+            kf6-ki18n-devel \
+            kf6-kio-devel \
+            kf6-ktextwidgets-devel \
+            kf6-kconfig-devel \
+            kf6-kcoreaddons-devel \
+            kf6-kwidgetsaddons-devel \
+            kf6-solid-devel \
+            dbus-x11 \
+            xorg-x11-server-Xvfb
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+          path: build/
 
       - name: Run tests
         run: |
