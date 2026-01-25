@@ -31,6 +31,7 @@ private slots:
     void testFindSnapshots_noSnapshots();
     void testFindSnapshots_multipleSnapshots();
     void testFindSnapshots_snapshotWithTimestamp();
+    void testFindSnapshotDirectory_nestedStructure();
 
 private:
     QTemporaryDir *tempDir;
@@ -210,6 +211,46 @@ void SnapshotDiscoveryTest::testFindSnapshots_snapshotWithTimestamp()
     QStringList snapshots = snapDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name);
     QCOMPARE(snapshots.size(), 3);
     QCOMPARE(snapshots[0], timestampNames[0]);
+}
+
+void SnapshotDiscoveryTest::testFindSnapshotDirectory_nestedStructure()
+{
+    // Test case from user comment: Ensure snapshot discovery only looks in immediate directory
+    // Given folder structure /a/b/c where:
+    // - /a does not contain .snap
+    // - /a/b/.snap exists
+    // - /a/b/c/.snap exists
+    
+    // Create the directory structure
+    QString dirA = testPath + "/a";
+    QString dirB = dirA + "/b";
+    QString dirC = dirB + "/c";
+    
+    createDirectory(dirA);
+    createDirectory(dirB);
+    createDirectory(dirC);
+    
+    // Create snapshot directories in b and c, but NOT in a
+    createDirectory(dirB + "/.snap");
+    createDirectory(dirC + "/.snap");
+    
+    // Test 1: Querying /a should find NO snapshots (even though child dirs have .snap)
+    QString resultA = SnapshotsPane::findSnapshotDirectory(dirA);
+    QVERIFY(resultA.isEmpty());
+    
+    // Test 2: Querying /a/b should find /a/b/.snap
+    QString resultB = SnapshotsPane::findSnapshotDirectory(dirB);
+    QCOMPARE(resultB, dirB + "/.snap");
+    
+    // Test 3: Querying for file /a/b/test.txt should find /a/b/.snap (parent directory)
+    QString testFile = dirB + "/test.txt";
+    createFile(testFile);
+    
+    // For a file, we need to get its parent directory and check there
+    QFileInfo fileInfo(testFile);
+    QString parentDir = fileInfo.absolutePath();
+    QString resultFile = SnapshotsPane::findSnapshotDirectory(parentDir);
+    QCOMPARE(resultFile, dirB + "/.snap");
 }
 
 QTEST_MAIN(SnapshotDiscoveryTest)
