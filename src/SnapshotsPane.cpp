@@ -31,15 +31,23 @@ QString SnapshotsPane::findSnapshotDirectory(const QString &parentPath)
     return QString();
 }
 
+QString SnapshotsPane::getSearchPathForSnapshots(const QString &filePath)
+{
+    QFileInfo fileInfo(filePath);
+    // For directories, snapshots are in directory/.snap/*
+    // For files, snapshots are in parent/.snap/*/filename
+    return fileInfo.isDir() ? fileInfo.absoluteFilePath() : fileInfo.absolutePath();
+}
+
 QList<SnapshotInfo> SnapshotsPane::findSnapshots(const QString &filePath)
 {
     QList<SnapshotInfo> snapshots;
     QFileInfo fileInfo(filePath);
 
-    QString parentDirectoryPath = fileInfo.absolutePath();
-    QString fileName = fileInfo.fileName();
+    QString searchPath = getSearchPathForSnapshots(filePath);
+    QString fileName = fileInfo.isDir() ? QString() : fileInfo.fileName();
 
-    QString snapDirectoryPath = findSnapshotDirectory(parentDirectoryPath);
+    QString snapDirectoryPath = findSnapshotDirectory(searchPath);
     if (snapDirectoryPath.isEmpty()) {
         return snapshots;
     }
@@ -48,7 +56,10 @@ QList<SnapshotInfo> SnapshotsPane::findSnapshots(const QString &filePath)
     QStringList snapshotEntries = snapDirectory.entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name);
 
     for (const QString &snapshotName : snapshotEntries) {
-        QString snapshotPath = snapDirectoryPath + QStringLiteral("/") + snapshotName + QStringLiteral("/") + fileName;
+        QString snapshotPath = snapDirectoryPath + QStringLiteral("/") + snapshotName;
+        if (!fileName.isEmpty()) {
+            snapshotPath += QStringLiteral("/") + fileName;
+        }
         QFileInfo snapshotFileInfo(snapshotPath);
 
         if (snapshotFileInfo.exists()) {
