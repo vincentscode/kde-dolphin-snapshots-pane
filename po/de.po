@@ -2,9 +2,6 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 
-msgid "Snapshots are not supported at this location."
-msgstr "Snapshots werden an diesem Ort nicht unterstützt."
-
 msgid "1 snapshot found:"
 msgid_plural "%1 snapshots found:"
 msgstr[0] "1 snapshot gefunden:"
