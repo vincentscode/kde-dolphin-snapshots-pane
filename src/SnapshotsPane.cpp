@@ -69,15 +69,6 @@ SnapshotsPane::SnapshotsPane(const QString &filePath, KPropertiesDialog *props)
     setMinimumWidth(500);
     QVBoxLayout *layout = new QVBoxLayout(this);
 
-    QFileInfo fileInfo(filePath);
-    QString parentDirectoryPath = fileInfo.absolutePath();
-
-    if (findSnapshotDirectory(parentDirectoryPath).isEmpty()) {
-        QLabel *messageLabel = new QLabel(i18n("Snapshots are not supported at this location."), this);
-        layout->addWidget(messageLabel);
-        return;
-    }
-
     QList<SnapshotInfo> snapshots = findSnapshots(filePath);
 
     QLabel *headerLabel = new QLabel(i18np("1 snapshot found:", "%1 snapshots found:", snapshots.size()), this);
