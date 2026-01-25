@@ -56,6 +56,8 @@ jobs:
         run: |
           dnf install -y \
             cmake \
+            gcc-c++ \
+            extra-cmake-modules \
             qt6-qtbase-devel \
             qt6-qt5compat-devel \
             kf6-kxmlgui-devel \
@@ -77,6 +79,9 @@ jobs:
         with:
           name: build-artifacts
           path: build/
+
+      - name: Make test executables executable
+        run: chmod +x build/tests/*Test
 
       - name: Run tests
         run: |
