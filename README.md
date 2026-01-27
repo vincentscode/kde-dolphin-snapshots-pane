@@ -16,6 +16,14 @@ To use the Snapshots Pane in Dolphin, right-click on a file or folder and select
 In the properties dialog, navigate to the "Snapshots" tab to view snapshots of the selected file or folder.
 You can open a snapshot by double-clicking on it in the list.
 
+## Content Note
+
+While the initial implementation of this project has been done entirely by hand,
+later commits used generative large language models to implement additional features or bug fixes.
+
+I use this project as a personal testing ground for tools such as GitHub Copilot and Anthropic's Claude.
+Any commit containing code by a large language model has its author set accordingly.
+
 ## Building
 
 ```bash
