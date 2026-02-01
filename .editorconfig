@@ -10,3 +10,7 @@ trim_trailing_whitespace = true
 
 [*.{cpp,h}]
 cpp_space_pointer_reference_alignment = right
+
+[*.{yml,yaml}]
+indent_style = space
+indent_size = 4
