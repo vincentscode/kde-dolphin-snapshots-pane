@@ -9,7 +9,7 @@ class SnapshotsPane;
 
 class SnapshotsPanePlugin : public KPropertiesDialogPlugin
 {
-Q_OBJECT
+    Q_OBJECT
 
 public:
     SnapshotsPanePlugin(QObject *parent);

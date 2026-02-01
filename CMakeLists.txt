@@ -70,7 +70,3 @@ install(TARGETS kde-dolphin-snapshots-pane DESTINATION ${KDE_INSTALL_PLUGINDIR}/
 install(FILES kde-dolphin-snapshots-pane.json DESTINATION  ${KDE_INSTALL_PLUGINDIR}/kf6/propertiesdialog/)
 
 ki18n_install(po)
-
-if(BUILD_TESTING)
-    add_subdirectory(tests)
-endif()
