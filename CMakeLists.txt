@@ -1,20 +1,21 @@
 cmake_minimum_required(VERSION 3.16)
 
-set (RELEASE_SERVICE_VERSION_MAJOR "1")
-set (RELEASE_SERVICE_VERSION_MINOR "0")
-set (RELEASE_SERVICE_VERSION_MICRO "0")
-set (RELEASE_SERVICE_VERSION "${RELEASE_SERVICE_VERSION_MAJOR}.${RELEASE_SERVICE_VERSION_MINOR}.${RELEASE_SERVICE_VERSION_MICRO}")
+set(RELEASE_SERVICE_VERSION_MAJOR "1")
+set(RELEASE_SERVICE_VERSION_MINOR "0")
+set(RELEASE_SERVICE_VERSION_MICRO "0")
+set(RELEASE_SERVICE_VERSION "${RELEASE_SERVICE_VERSION_MAJOR}.${RELEASE_SERVICE_VERSION_MINOR}.${RELEASE_SERVICE_VERSION_MICRO}")
 
 project(kde-dolphin-snapshots-pane VERSION ${RELEASE_SERVICE_VERSION})
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(QT_MIN_VERSION "6.8.2")
 set(KF_MIN_VERSION "6.11.0")
-
 set(CMAKE_BINARY_DIR "${CMAKE_SOURCE_DIR}/build" CACHE PATH "Build directory" FORCE)
 
 find_package(ECM ${KF_MIN_VERSION} CONFIG REQUIRED)
 set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake)
+
+set(KDE_SKIP_TEST_SETTINGS TRUE)
 
 include(QtVersionOption)
 include(ECMSetupVersion)
@@ -27,20 +28,23 @@ include(ECMOptionalAddSubdirectory)
 find_package(Qt6 ${QT_MIN_VERSION} REQUIRED COMPONENTS
     Core
     Core5Compat
-    Widgets
-    Network
     DBus
+    Network
+    Widgets
 )
+
 find_package(KF6 ${KF_MIN_VERSION} REQUIRED COMPONENTS
-    XmlGui
-    I18n
-    KIO
-    TextWidgets
     Config
     CoreAddons
-    WidgetsAddons
+    I18n
+    KIO
     Solid
+    TextWidgets
+    WidgetsAddons
+    XmlGui
 )
+
+add_definitions(-DTRANSLATION_DOMAIN="kde-dolphin-snapshots-pane")
 
 add_library(
     kde-dolphin-snapshots-pane
@@ -53,13 +57,19 @@ add_library(
     src/SnapshotsPanePlugin.cpp
 )
 
-target_link_libraries(kde-dolphin-snapshots-pane KF6::CoreAddons KF6::XmlGui KF6::I18n)
-target_link_libraries(kde-dolphin-snapshots-pane KF6::KIOCore KF6::KIOFileWidgets KF6::KIOWidgets)
+target_link_libraries(kde-dolphin-snapshots-pane
+    KF6::CoreAddons
+    KF6::I18n
+    KF6::KIOCore
+    KF6::KIOFileWidgets
+    KF6::KIOWidgets
+    KF6::XmlGui
+)
 
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${Qt6Widgets_INCLUDE_DIRS}
     ${KF6_INCLUDE_DIRS}
+    ${Qt6Widgets_INCLUDE_DIRS}
 )
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
@@ -67,6 +77,8 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 install(TARGETS kde-dolphin-snapshots-pane DESTINATION ${KDE_INSTALL_PLUGINDIR}/kf6/propertiesdialog/)
-install(FILES kde-dolphin-snapshots-pane.json DESTINATION  ${KDE_INSTALL_PLUGINDIR}/kf6/propertiesdialog/)
 
 ki18n_install(po)
+
+enable_testing()
+add_subdirectory(tests)

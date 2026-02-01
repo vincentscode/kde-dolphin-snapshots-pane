@@ -30,12 +30,21 @@ Any commit containing code by a large language model has its author set accordin
 git clone https://github.com/vincentscode/kde-dolphin-snapshots-pane.git
 cd kde-dolphin-snapshots-pane
 
-mkdir build
-cd build
+# configure
+cmake -B build -DCMAKE_BUILD_TYPE=Release
 
-cmake -DCMAKE_BUILD_TYPE=Release ..
-cmake --build .
+# build
+cmake --build build -j$(nproc)
 
-# optional (install)
-sudo cmake --build . --target install
+# install (optional)
+sudo cmake --build build --target install
+```
+
+## Testing
+
+```bash
+# must already be configured and built
+
+# run tests
+cmake --build build --target test
 ```

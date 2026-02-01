@@ -6,7 +6,7 @@
 struct SnapshotInfo {
     QString name;
     QString path;
-    QDateTime timestamp;
+    QDateTime lastModified;
 };
 
 class SnapshotFinder

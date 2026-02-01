@@ -12,14 +12,21 @@ const QStringList SnapshotFinder::snapshotDirectoryNames = {
 
 QString SnapshotFinder::getSnapshotDirectoryPath(const QString &path)
 {
-    QDir dir(path);
-    for (const QString &snapshotDirName : snapshotDirectoryNames) {
-        QString potentialPath = dir.absoluteFilePath(snapshotDirName);
-        QDir potentialDir(potentialPath);
-        if (potentialDir.exists()) {
-            return potentialPath;
+    QFileInfo pathInfo(path);
+    QString snapshotSearchPath = pathInfo.isDir()
+        ? pathInfo.absoluteFilePath()
+        : pathInfo.absolutePath();
+
+    QDir snapshotSearchDirectory(snapshotSearchPath);
+    for (const QString &snapshotDirectoryName : snapshotDirectoryNames) {
+        QString snapshotDirectoryPath = QDir::cleanPath(snapshotSearchDirectory.absoluteFilePath(snapshotDirectoryName));
+        QDir snapshotDirectory(snapshotDirectoryPath);
+
+        if (snapshotDirectory.exists()) {
+            return snapshotDirectoryPath;
         }
     }
+
     return QString();
 }
 
@@ -30,7 +37,8 @@ bool SnapshotFinder::hasSnapshots(const QString &path)
 
 QList<SnapshotInfo> SnapshotFinder::getSnapshots(const QString &path)
 {
-    QString fileName = QFileInfo(path).fileName();
+    QFileInfo pathInfo(path);
+    QString fileName = pathInfo.fileName();
     QList<SnapshotInfo> snapshots;
 
     QString snapshotDirectoryPath = getSnapshotDirectoryPath(path);
@@ -41,9 +49,9 @@ QList<SnapshotInfo> SnapshotFinder::getSnapshots(const QString &path)
     QDir snapshotDirectory(snapshotDirectoryPath);
     QStringList snapshotEntries = snapshotDirectory.entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name);
     for (const QString &snapshotName : snapshotEntries) {
-        QString snapshotPath = snapshotDirectoryPath + QStringLiteral("/") + snapshotName;
-        if (!fileName.isEmpty()) {
-            snapshotPath += QStringLiteral("/") + fileName;
+        QString snapshotPath = QDir::cleanPath(snapshotDirectory.absoluteFilePath(snapshotName));
+        if (pathInfo.isFile()) {
+            snapshotPath = QDir::cleanPath(QDir(snapshotPath).absoluteFilePath(fileName));
         }
 
         QFileInfo snapshotFileInfo(snapshotPath);
@@ -51,7 +59,7 @@ QList<SnapshotInfo> SnapshotFinder::getSnapshots(const QString &path)
             SnapshotInfo info;
             info.name = snapshotName;
             info.path = snapshotPath;
-            info.timestamp = snapshotFileInfo.lastModified();
+            info.lastModified = snapshotFileInfo.lastModified();
             snapshots.append(info);
         }
     }

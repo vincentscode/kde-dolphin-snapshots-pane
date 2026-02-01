@@ -30,7 +30,7 @@ SnapshotsPane::SnapshotsPane(const QString &filePath, KPropertiesDialog *props) 
     for (const SnapshotInfo &snapshot : snapshots) {
         QTreeWidgetItem *item = new QTreeWidgetItem();
         item->setText(0, snapshot.name);
-        item->setText(1, QLocale::system().toString(snapshot.timestamp, QLocale::ShortFormat));
+        item->setText(1, QLocale::system().toString(snapshot.lastModified, QLocale::ShortFormat));
         item->setData(0, Qt::UserRole, snapshot.path);
         treeWidget->addTopLevelItem(item);
     }
