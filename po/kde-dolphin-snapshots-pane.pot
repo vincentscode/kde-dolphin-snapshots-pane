@@ -20,7 +20,11 @@ msgid "Name"
 msgstr ""
 
 msgctxt "@title:column"
-msgid "Date"
+msgid "Snapshot Timestamp"
+msgstr ""
+
+msgctxt "@title:column"
+msgid "Last Modified"
 msgstr ""
 
 msgctxt "SnapshotsPane"

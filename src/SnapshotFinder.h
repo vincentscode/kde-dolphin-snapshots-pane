@@ -6,7 +6,8 @@
 struct SnapshotInfo {
     QString name;
     QString path;
-    QDateTime lastModified;
+    QDateTime lastModifiedTimestamp;
+    QDateTime snapshotTimestamp;
 };
 
 class SnapshotFinder
@@ -17,5 +18,7 @@ public:
 
 private:
     static const QStringList snapshotDirectoryNames;
+    static const QStringList snapshotTimestampTemplates;
     static QString getSnapshotDirectoryPath(const QString &path);
+    static QDateTime parseSnapshotTimestamp(const QString &snapshotName);
 };

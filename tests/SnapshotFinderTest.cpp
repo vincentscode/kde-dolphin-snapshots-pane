@@ -2,6 +2,7 @@
 #include <QTemporaryDir>
 #include <QDir>
 #include <QFile>
+#include <QTimeZone>
 
 #include "SnapshotFinder.h"
 
@@ -19,6 +20,9 @@ private Q_SLOTS:
     void testFileSnapshotDirectory();
     void testFileSnapshotMultipleDirectories();
     void testFileSnapshotMultiplePartialDirectories();
+    void testTimestamp();
+    void testTimestampWithPrefixAndSuffix();
+    void testTimestampUnknownFormat();
 };
 
 void SnapshotFinderTest::testNoSnapshotDirectory()
@@ -242,6 +246,72 @@ void SnapshotFinderTest::testFileSnapshotMultiplePartialDirectories()
     // assert
     QVERIFY(hasSnapshots);
     QCOMPARE(snapshots.size(), 2);
+}
+
+void SnapshotFinderTest::testTimestamp()
+{
+    // arrange
+    QTemporaryDir tmp;
+    QString targetPath = tmp.path();
+
+    QDir dir(tmp.path());
+    dir.mkdir(QStringLiteral(".snap"));
+
+    QDir snapDir(tmp.path() + QStringLiteral("/.snap"));
+    snapDir.mkdir(QStringLiteral("scheduled-2026-01-23-04_00_40_UTC"));
+
+    // act
+    QList<SnapshotInfo> snapshots = SnapshotFinder::getSnapshots(targetPath);
+
+    // assert
+    QVERIFY(snapshots.size() == 1);
+    QVERIFY(snapshots.first().snapshotTimestamp.isValid());
+    QCOMPARE(snapshots.first().snapshotTimestamp.date(), QDate(2026, 1, 23));
+    QCOMPARE(snapshots.first().snapshotTimestamp.time(), QTime(4, 0, 40));
+    QCOMPARE(snapshots.first().snapshotTimestamp.timeZone(), QTimeZone::utc());
+}
+
+void SnapshotFinderTest::testTimestampWithPrefixAndSuffix()
+{
+    // arrange
+    QTemporaryDir tmp;
+    QString targetPath = tmp.path();
+
+    QDir dir(tmp.path());
+    dir.mkdir(QStringLiteral(".snap"));
+
+    QDir snapDir(tmp.path() + QStringLiteral("/.snap"));
+    snapDir.mkdir(QStringLiteral("_scheduled-2026-01-24-04_00_40_UTC_1"));
+
+    // act
+    QList<SnapshotInfo> snapshots = SnapshotFinder::getSnapshots(targetPath);
+
+    // assert
+    QVERIFY(snapshots.size() == 1);
+    QVERIFY(snapshots.first().snapshotTimestamp.isValid());
+    QCOMPARE(snapshots.first().snapshotTimestamp.date(), QDate(2026, 1, 24));
+    QCOMPARE(snapshots.first().snapshotTimestamp.time(), QTime(4, 0, 40));
+    QCOMPARE(snapshots.first().snapshotTimestamp.timeZone(), QTimeZone::utc());
+}
+
+void SnapshotFinderTest::testTimestampUnknownFormat()
+{
+    // arrange
+    QTemporaryDir tmp;
+    QString targetPath = tmp.path();
+
+    QDir dir(tmp.path());
+    dir.mkdir(QStringLiteral(".snap"));
+
+    QDir snapDir(tmp.path() + QStringLiteral("/.snap"));
+    snapDir.mkdir(QStringLiteral("20260124T040040Z"));
+
+    // act
+    QList<SnapshotInfo> snapshots = SnapshotFinder::getSnapshots(targetPath);
+
+    // assert
+    QVERIFY(snapshots.size() == 1);
+    QVERIFY(!snapshots.first().snapshotTimestamp.isValid());
 }
 
 QTEST_MAIN(SnapshotFinderTest)

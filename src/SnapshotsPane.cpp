@@ -23,14 +23,17 @@ SnapshotsPane::SnapshotsPane(const QString &filePath, KPropertiesDialog *props) 
     layout->addWidget(headerLabel);
 
     QTreeWidget *treeWidget = new QTreeWidget(this);
-    treeWidget->setHeaderLabels({ i18nc("@title:column", "Name"), i18nc("@title:column", "Date") });
+    treeWidget->setHeaderLabels({ i18nc("@title:column", "Name"), i18nc("@title:column", "Snapshot Timestamp"), i18nc("@title:column", "Last Modified") });
     treeWidget->setRootIsDecorated(false);
     treeWidget->header()->setStretchLastSection(true);
 
     for (const SnapshotInfo &snapshot : snapshots) {
         QTreeWidgetItem *item = new QTreeWidgetItem();
         item->setText(0, snapshot.name);
-        item->setText(1, QLocale::system().toString(snapshot.lastModified, QLocale::ShortFormat));
+        item->setText(1, snapshot.snapshotTimestamp.isValid()
+            ? QLocale::system().toString(snapshot.snapshotTimestamp, QLocale::ShortFormat)
+            : QString());
+        item->setText(2, QLocale::system().toString(snapshot.lastModifiedTimestamp, QLocale::ShortFormat));
         item->setData(0, Qt::UserRole, snapshot.path);
         treeWidget->addTopLevelItem(item);
     }
