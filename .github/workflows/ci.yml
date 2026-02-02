@@ -33,14 +33,14 @@ jobs:
       - name: Cache DNF packages
         uses: actions/cache@v4
         with:
-          path: /var/cache/dnf
+          path: /var/cache/libdnf5
           key: ${{ runner.os }}-fedora-latest-dnf-${{ hashFiles('.github/workflows/ci.yml') }}
           restore-keys: |
             ${{ runner.os }}-fedora-latest-dnf-
 
       - name: Install dependencies
         run: |
-          dnf install -y \
+          dnf install -y --setopt=keepcache=1 \
             cmake \
             gcc-c++ \
             extra-cmake-modules \
