@@ -27,17 +27,6 @@ jobs:
     container:
       image: fedora:latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Cache DNF packages
-        uses: actions/cache@v4
-        with:
-          path: /var/cache/libdnf5
-          key: ${{ runner.os }}-fedora-latest-dnf-${{ hashFiles('.github/workflows/ci.yml') }}
-          restore-keys: |
-            ${{ runner.os }}-fedora-latest-dnf-
-
       - name: Install dependencies
         run: |
           dnf install -y \
@@ -49,6 +38,9 @@ jobs:
             kf6-ki18n-devel \
             kf6-kio-devel \
             kf6-kcoreaddons-devel
+
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Configure
         run: cmake -B build -DCMAKE_BUILD_TYPE=Release
