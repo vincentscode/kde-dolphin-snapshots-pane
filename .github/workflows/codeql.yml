@@ -51,15 +51,10 @@ jobs:
           gcc-c++ \
           extra-cmake-modules \
           qt6-qtbase-devel \
-          qt6-qt5compat-devel \
           kf6-kxmlgui-devel \
           kf6-ki18n-devel \
           kf6-kio-devel \
-          kf6-ktextwidgets-devel \
-          kf6-kconfig-devel \
-          kf6-kcoreaddons-devel \
-          kf6-kwidgetsaddons-devel \
-          kf6-solid-devel
+          kf6-kcoreaddons-devel
 
     - name: Run manual build steps
       if: matrix.build-mode == 'manual'
