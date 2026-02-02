@@ -40,7 +40,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          dnf install -y --setopt=keepcache=1 \
+          dnf install -y \
             cmake \
             gcc-c++ \
             extra-cmake-modules \
