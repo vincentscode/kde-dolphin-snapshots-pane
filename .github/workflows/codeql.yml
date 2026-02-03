@@ -30,6 +30,17 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
+    - name: Cache DNF packages
+      uses: actions/cache@v4
+      with:
+        path: |
+          /var/cache/dnf
+          /var/lib/dnf
+        key: ${{ runner.os }}-dnf-codeql-${{ hashFiles('.github/workflows/codeql.yml') }}
+        restore-keys: |
+          ${{ runner.os }}-dnf-codeql-
+          ${{ runner.os }}-dnf-
+
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v4
       with:
