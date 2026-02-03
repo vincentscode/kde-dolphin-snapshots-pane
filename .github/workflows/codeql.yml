@@ -49,6 +49,7 @@ jobs:
 
     - name: Install dependencies
       run: |
+        dnf makecache --refresh
         dnf install -y \
           cmake \
           gcc-c++ \
