@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up editorconfig-checker
         uses: editorconfig-checker/action-editorconfig-checker@main
@@ -28,7 +28,7 @@ jobs:
       image: fedora:latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Cache DNF packages
         uses: actions/cache@v4
