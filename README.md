@@ -18,8 +18,8 @@ You can open a snapshot by double-clicking on it in the list.
 
 ## Content Note
 
-While the initial implementation of this project has been done entirely by hand,
-later commits used generative large language models to implement additional features or bug fixes.
+While the bulk of the implementation of this project has been done entirely by hand,
+some commits used generative large language models to implement features or bug fixes.
 
 I use this project as a personal testing ground for tools such as GitHub Copilot and Anthropic's Claude.
 Any commit containing code by a large language model has its author set accordingly.
