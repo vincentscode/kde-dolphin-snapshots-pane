@@ -31,6 +31,7 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Cache DNF packages
+      if: matrix.build-mode == 'manual'
       uses: actions/cache@v4
       with:
         path: |
@@ -47,7 +48,9 @@ jobs:
         languages: ${{ matrix.language }}
         build-mode: ${{ matrix.build-mode }}
 
-    - name: Install dependencies
+    - name: Install manual build dependencies
+      if: matrix.build-mode == 'manual'
+      shell: bash
       run: |
         dnf config-manager setopt keepcache=True
         dnf makecache --refresh
