@@ -24,6 +24,8 @@ some commits used generative large language models to implement features or bug 
 I use this project as a personal testing ground for tools such as GitHub Copilot and Anthropic's Claude.
 Any commit containing code by a large language model has its author set accordingly.
 
+Additionally, this repository is also used to test other software engineering tools, such as Jujutsu as version control system.
+
 ## Building
 
 ```bash
